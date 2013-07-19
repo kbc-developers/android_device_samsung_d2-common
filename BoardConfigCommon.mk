@@ -31,12 +31,12 @@ USE_CAMERA_STUB := true
 TARGET_SPECIFIC_HEADER_PATH := device/samsung/d2-common/include
 
 # Kernel
-TARGET_KERNEL_SOURCE        := kernel/samsung/d2
+TARGET_KERNEL_SOURCE        := kernel/samsung/d2dcm
 BOARD_KERNEL_CMDLINE        := androidboot.hardware=qcom user_debug=31 zcache
 BOARD_KERNEL_BASE           := 0x80200000
 BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x01300000
 BOARD_KERNEL_PAGESIZE       := 2048
-TARGET_KERNEL_VARIANT_CONFIG := cyanogen_d2_defconfig
+TARGET_KERNEL_VARIANT_CONFIG := cyanogen_d2dcm_defconfig
 ifeq ($(HAVE_SELINUX),true)
 TARGET_KERNEL_SELINUX_CONFIG := m2selinux_defconfig
 endif
