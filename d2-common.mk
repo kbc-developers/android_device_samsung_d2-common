@@ -123,7 +123,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     lpa.decode=true \
     rild.libpath=/system/lib/libril-qc-qmi-1.so \
     ril.subscription.types=NV,RUIM \
-    ro.config.svlte1x=true \
+    ro.ril.svdo=true \
     ro.cdma.subscribe_on_ruim_ready=true \
     persist.radio.no_wait_for_card=0 \
     keyguard.no_require_sim=true \
@@ -144,6 +144,11 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.audio.handset.mic=digital \
     ro.qc.sdk.audio.fluencetype=fluence
 endif
+
+# enable repeatable keys in cwm
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.cwm.enable_key_repeat=true \
+    ro.cwm.repeatable_keys=114,115
 
 # NFC Support
 PRODUCT_PACKAGES += \
