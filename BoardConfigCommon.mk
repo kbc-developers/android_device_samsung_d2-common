@@ -31,8 +31,7 @@ BOARD_KERNEL_CMDLINE        := androidboot.hardware=qcom user_debug=31 zcache
 BOARD_KERNEL_BASE           := 0x80200000
 BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x01300000
 BOARD_KERNEL_PAGESIZE       := 2048
-TARGET_KERNEL_VARIANT_CONFIG := cyanogen_d2_defconfig
-TARGET_KERNEL_SELINUX_CONFIG := m2selinux_defconfig
+TARGET_KERNEL_CONFIG        := cyanogen_d2_defconfig
 
 TARGET_BOOTLOADER_BOARD_NAME := MSM8960
 
@@ -81,10 +80,11 @@ BOARD_HAVE_DOCK_USBAUDIO := true
 #camera abi compatiblily
 TARGET_DISPLAY_INSECURE_MM_HEAP := true
 COMMON_GLOBAL_CFLAGS += -DQCOM_BSP_CAMERA_ABI_HACK
-TARGET_NEED_DISABLE_AUTOFOCUS := true
 ifeq ($(filter cm_apexqtmo cm_expressatt,$(TARGET_PRODUCT)),)
   TARGET_NEED_CAMERA_ZSL := true
   TARGET_ADD_ISO_MODE_1600 := true
+else
+  TARGET_NEED_DISABLE_AUTOFOCUS := true
 endif
 TARGET_NEED_DISABLE_FACE_DETECTION := true
 
