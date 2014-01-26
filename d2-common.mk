@@ -16,25 +16,28 @@
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
-## Get non-open-source specific aspects
-$(call inherit-product, vendor/samsung/d2-common/d2-common-vendor.mk)
+## (2) Also get non-open-source specific aspects if available
+$(call inherit-product-if-exists, vendor/samsung/d2-common/d2-common-vendor.mk)
 
 ## overlays
 DEVICE_PACKAGE_OVERLAYS += device/samsung/d2-common/overlay
 
-ifneq ($(VARIENT_MODEL),expressatt)
+# Boot animation and screen size
+
+ifeq ($(filter apexqtmo expressatt,$(VARIENT_MODEL)),)
 # Device uses high-density artwork where available
 PRODUCT_AAPT_CONFIG := normal hdpi xhdpi
 PRODUCT_AAPT_PREF_CONFIG := xhdpi
-endif
-
-# Boot animation
-
-ifeq ($(filter apexqtmo expressatt,$(VARIENT_MODEL)),)
-## merge colusion
 TARGET_SCREEN_HEIGHT := 1280
 TARGET_SCREEN_WIDTH := 720
 PRODUCT_PROPERTY_OVERRIDES += ro.sf.lcd_density=320
+else
+# These poor devices have smaller screens
+PRODUCT_AAPT_CONFIG := normal hdpi
+PRODUCT_AAPT_PREF_CONFIG := hdpi
+TARGET_SCREEN_HEIGHT := 800
+TARGET_SCREEN_WIDTH := 480
+PRODUCT_PROPERTY_OVERRIDES += ro.sf.lcd_density=240
 endif
 
 # Audio configuration
@@ -107,7 +110,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.radio.snapshot_disabled=1 \
     com.qc.hardware=true \
     persist.radio.apm_sim_not_pwdn=1 \
-    ro.telephony.call_ring.multiple=0 \
     ro.ril.transmitpower=true \
     ro.opengles.version=131072 \
     persist.audio.vr.enable=false \
@@ -132,7 +134,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.rild.nitz_short_ons_0="" \
     persist.rild.nitz_short_ons_1="" \
     persist.rild.nitz_short_ons_2="" \
-    persist.rild.nitz_short_ons_3=""
+    persist.rild.nitz_short_ons_3="" \
+    dalvik.vm.dexopt-data-only=0
 
 ifneq ($(VARIENT_MODEL),apexqtmo)
 PRODUCT_PROPERTY_OVERRIDES += \
