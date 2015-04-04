@@ -29,7 +29,7 @@ TARGET_SPECIFIC_HEADER_PATH += device/samsung/d2-common/include
 TARGET_BOOTLOADER_BOARD_NAME := MSM8960
 
 # Kernel
-TARGET_KERNEL_CONFIG        := cyanogen_d2_defconfig
+TARGET_KERNEL_CONFIG        := cyanogen_d2dcm_defconfig
 
 # Audio
 BOARD_HAVE_AUDIENCE_A2220 := true
