@@ -45,22 +45,17 @@ public class d2lteRIL extends RIL implements CommandsInterface {
 
     private AudioManager mAudioManager;
     private boolean isGSM = false;
-    private boolean mIsSendingSMS = false;
-    private static final int RIL_REQUEST_DIAL_EMERGENCY = 10001;
-    public static final long SEND_SMS_TIMEOUT_IN_MS = 30000;
-    private Object mSMSLock = new Object();
+    private boolean samsungEmergency = needsOldRilFeature("samsungEMSReq");
 
     public d2lteRIL(Context context, int networkModes, int cdmaSubscription) {
         this(context, networkModes, cdmaSubscription, null);
         mAudioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
-        mQANElements = SystemProperties.getInt("ro.ril.telephony.mqanelements", 4);
     }
 
     public d2lteRIL(Context context, int preferredNetworkType,
             int cdmaSubscription, Integer instanceId) {
         super(context, preferredNetworkType, cdmaSubscription, instanceId);
         mAudioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
-        mQANElements = SystemProperties.getInt("ro.ril.telephony.mqanelements", 4);
     }
 
     @Override
@@ -134,44 +129,6 @@ public class d2lteRIL extends RIL implements CommandsInterface {
     }
 
     @Override
-    public void
-    sendCdmaSms(byte[] pdu, Message result) {
-        smsLock();
-        super.sendCdmaSms(pdu, result);
-    }
-
-    @Override
-    public void
-        sendSMS (String smscPDU, String pdu, Message result) {
-        smsLock();
-        super.sendSMS(smscPDU, pdu, result);
-    }
-
-    private void smsLock(){
-        // Do not send a new SMS until the response for the previous SMS has been received
-        //   * for the error case where the response never comes back, time out after
-        //     30 seconds and just try the next SEND_SMS
-        synchronized (mSMSLock) {
-            long timeoutTime  = SystemClock.elapsedRealtime() + SEND_SMS_TIMEOUT_IN_MS;
-            long waitTimeLeft = SEND_SMS_TIMEOUT_IN_MS;
-            while (mIsSendingSMS && (waitTimeLeft > 0)) {
-                Rlog.d(RILJ_LOG_TAG, "sendSMS() waiting for response of previous SEND_SMS");
-                try {
-                    mSMSLock.wait(waitTimeLeft);
-                } catch (InterruptedException ex) {
-                    // ignore the interrupt and rewait for the remainder
-                }
-                waitTimeLeft = timeoutTime - SystemClock.elapsedRealtime();
-            }
-            if (waitTimeLeft <= 0) {
-                Rlog.e(RILJ_LOG_TAG, "sendSms() timed out waiting for response of previous CDMA_SEND_SMS");
-            }
-            mIsSendingSMS = true;
-        }
-
-    }
-
-    @Override
     protected Object responseSignalStrength(Parcel p) {
         int numInts = 12;
         int response[];
@@ -223,12 +180,10 @@ public class d2lteRIL extends RIL implements CommandsInterface {
             dc.isMT = (0 != p.readInt());
             dc.als = p.readInt();
             voiceSettings = p.readInt();
-            dc.isVoice = (0 == voiceSettings) ? false : true;
-            if (!isGSM) {
+            if (isGSM){
                 p.readInt();
-                p.readInt();
-                p.readString();
             }
+            dc.isVoice = (0 == voiceSettings) ? false : true;
             dc.isVoicePrivacy = (0 != p.readInt());
             if (isGSM) {
                 p.readInt();
@@ -325,10 +280,6 @@ public class d2lteRIL extends RIL implements CommandsInterface {
                 ret = responseInts(p);
                 setWbAmr(((int[])ret)[0]);
                 break;
-            case 11055: // RIL_UNSOL_ON_SS:
-                p.setDataPosition(dataPosition);
-                p.writeInt(RIL_UNSOL_ON_SS);
-                // Do not break
             default:
                 // Rewind the Parcel
                 p.setDataPosition(dataPosition);
@@ -338,19 +289,6 @@ public class d2lteRIL extends RIL implements CommandsInterface {
                 return;
         }
 
-    }
-
-    @Override
-    public void
-    acceptCall (Message result) {
-        RILRequest rr = RILRequest.obtain(RIL_REQUEST_ANSWER, result);
-
-        rr.mParcel.writeInt(1);
-        rr.mParcel.writeInt(0);
-
-        if (RILJ_LOGD) riljLog(rr.serialString() + "> " + requestToString(rr.mRequest));
-
-        send(rr);
     }
 
     @Override
@@ -527,24 +465,10 @@ public class d2lteRIL extends RIL implements CommandsInterface {
         super.notifyRegistrantsCdmaInfoRec(infoRec);
     }
 
-
-
-    @Override
-    protected Object
-    responseSMS(Parcel p) {
-        // Notify that sendSMS() can send the next SMS
-        synchronized (mSMSLock) {
-            mIsSendingSMS = false;
-            mSMSLock.notify();
-        }
-
-        return super.responseSMS(p);
-    }
-
     @Override
     public void
     dial(String address, int clirMode, UUSInfo uusInfo, Message result) {
-        if (PhoneNumberUtils.isEmergencyNumber(address)) {
+        if (samsungEmergency && PhoneNumberUtils.isEmergencyNumber(address)) {
             dialEmergencyCall(address, clirMode, result);
             return;
         }
@@ -616,6 +540,7 @@ public class d2lteRIL extends RIL implements CommandsInterface {
         }
     }
 
+    static final int RIL_REQUEST_DIAL_EMERGENCY = 10016;
    private void
     dialEmergencyCall(String address, int clirMode, Message result) {
         RILRequest rr;
