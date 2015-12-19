@@ -83,6 +83,12 @@ endif
 PRODUCT_COPY_FILES += \
     $(NFCEE_ACCESS_PATH):system/etc/nfcee_access.xml
 
+# Recovery
+ifeq ($(TARGET_RECOVERY),twrp)
+PRODUCT_COPY_FILES += \
+    device/samsung/d2-common/twrp.fstab:recovery/root/etc/twrp.fstab
+endif
+
 # Wifi
 PRODUCT_COPY_FILES += \
     device/samsung/d2-common/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf \
