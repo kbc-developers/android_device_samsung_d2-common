@@ -57,6 +57,7 @@ cameradata/SlimISP_ZM.bin
 lib/drm/libfwdlockengine.so
 lib/libQSEEComAPI.so
 lib/liboemcrypto.so
+lib/libril-qc-qmi-1.so
 vendor/lib/drm/libdrmwvmplugin.so
 vendor/lib/libWVStreamControlAPI_L1.so
 vendor/lib/libWVphoneAPI.so
