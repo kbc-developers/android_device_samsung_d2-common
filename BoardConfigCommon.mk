@@ -30,6 +30,7 @@ TARGET_BOOTLOADER_BOARD_NAME := MSM8960
 
 # Kernel
 TARGET_KERNEL_CONFIG        := cyanogen_d2dcm_defconfig
+TARGET_KERNEL_CROSS_COMPILE_PREFIX := arm-linux-androideabi-
 
 # Platform
 USE_CLANG_PLATFORM_BUILD := true
