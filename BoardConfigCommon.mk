@@ -29,7 +29,6 @@ TARGET_SPECIFIC_HEADER_PATH += device/samsung/d2-common/include
 TARGET_BOOTLOADER_BOARD_NAME := MSM8960
 
 # Kernel
-TARGET_KERNEL_CONFIG        := cyanogen_d2dcm_defconfig
 TARGET_KERNEL_CROSS_COMPILE_PREFIX := arm-linux-androideabi-
 
 # Platform
