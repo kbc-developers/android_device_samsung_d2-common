@@ -87,7 +87,7 @@ WIFI_DRIVER_FW_PATH_AP      := "/system/etc/wifi/bcmdhd_apsta.bin"
 TARGET_RELEASETOOLS_EXTENSIONS := device/samsung/d2-common
 
 # TWRP
-ifeq ($(TARGET_RECOVERY),twrp)
+RECOVERY_VARIANT := twrp
 DEVICE_RESOLUTION := 720x1280
 RECOVERY_GRAPHICS_USE_LINELENGTH := true
 RECOVERY_SDCARD_ON_DATA := true
@@ -109,4 +109,3 @@ TW_CRYPTO_FS_FLAGS := "0x00000406"
 TW_CRYPTO_KEY_LOC := "footer"
 TW_BRIGHTNESS_PATH := /sys/devices/platform/msm_fb.524801/leds/lcd-backlight/brightness
 TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun0/file
-endif

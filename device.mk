@@ -91,11 +91,9 @@ endif
 PRODUCT_COPY_FILES += \
     $(NFCEE_ACCESS_PATH):system/etc/nfcee_access.xml
 
-# Recovery
-ifeq ($(TARGET_RECOVERY),twrp)
+# TWRP Recovery
 PRODUCT_COPY_FILES += \
     device/samsung/d2-common/twrp.fstab:recovery/root/etc/twrp.fstab
-endif
 
 # Wifi
 PRODUCT_COPY_FILES += \
