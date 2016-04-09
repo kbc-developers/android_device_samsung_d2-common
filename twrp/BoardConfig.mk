@@ -45,4 +45,5 @@ TW_BRIGHTNESS_PATH := /sys/devices/platform/msm_fb.524801/leds/lcd-backlight/bri
 TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun0/file
 
 # twrp.fstab
-PRODUCT_COPY_FILES += device/samsung/d2-common/twrp/rootdir/etc/twrp.fstab:recovery/root/etc/twrp.fstab
+TARGET_RECOVERY_FSTAB := $(ANDROID_BUILD_TOP)/device/samsung/d2-common/twrp/rootdir/etc/twrp.fstab
+PRODUCT_COPY_FILES += $(ANDROID_BUILD_TOP)/device/samsung/d2-common/twrp/rootdir/etc/twrp.fstab:recovery/root/etc/twrp.fstab
