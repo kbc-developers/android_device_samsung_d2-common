@@ -87,4 +87,6 @@ WIFI_DRIVER_FW_PATH_AP      := "/system/etc/wifi/bcmdhd_apsta.bin"
 TARGET_RELEASETOOLS_EXTENSIONS := device/samsung/d2-common
 
 # Include TWRP Options
+ifeq ($(TARGET_RECOVERY),twrp)
 include device/samsung/d2-common/twrp/BoardConfig.mk
+endif
